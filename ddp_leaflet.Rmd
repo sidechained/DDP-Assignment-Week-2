@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The map below shows the locations of funded cultural institutions within Berlin. It uses a dataset that can be found on the Berlin Open Data website [here](https://daten.berlin.de/datensaetze/standorte-geförderter-kultureinrichtungen) and is free to share and adapt under the following [creative commons license](https://creativecommons.org/licenses/by/3.0/de/).
+The map below shows the locations of publicly-funded cultural institutions within Berlin. It uses a dataset that can be found on the Berlin Open Data website [here](https://daten.berlin.de/datensaetze/standorte-geförderter-kultureinrichtungen) and is free to share and adapt under the following [creative commons license](https://creativecommons.org/licenses/by/3.0/de/).
 
 The map can be zoomed with the mouse or using the + and - icons, to better differentiate the data. The different icon types and colour used on the markers refer to different categories of cultural institution, of which there are ten in total. Hovering over a given marker reveals a pop-up, which shows the name of the institution (in German) and the closest public transport station (underground or suburban train).
 
