@@ -1,0 +1,74 @@
+---
+title: "Developing Data Products - Leaflet Example"
+author: "Graham Booth"
+date: "10/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# DONE: Create a web page using R Markdown that features a map created with Leaflet.
+
+#Host your webpage on either GitHub Pages, RPubs, or NeoCities.
+# Your webpage must contain the date that you created the document, and it must contain a map created with Leaflet
+## Does the web page feature a date and is this date less than two months before the date that you're grading this assignment?
+## Does the web page feature an interactive map that appears to have been created with Leaflet?
+
+# lat long list of things in berlin
+# draw a line between each item
+# (custom/circle) markers, popups, rectangle, legend
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following map shows the locations of funded cultural institutions within Berlin. It uses a dataset that can be found on the Berlin Open Data website [here](https://daten.berlin.de/datensaetze/standorte-geförderter-kultureinrichtungen) and is free to share and adapt under the following [creative commons license](https://creativecommons.org/licenses/by/3.0/de/).
+
+The map can be zoomed with the mouse or using the + and - icons, to better differentiate the data. The different icon types and colour used on the markers refer to different categories of cultural institution, of which there are ten in total. Hovering over a given marker reveals a pop-up, which shows the name of the institution (in German) and the closest public transport station (underground or suburban train).
+
+```{r, echo=FALSE, message=FALSE}
+library("readxl")
+library("dplyr")
+library("leaflet")
+
+if (!file.exists("cultural_institutions.xlsx")) {
+download.file("http://www.berlin.de/sen/kultur/_assets/statistiken/kultureinrichtungen_alle.xlsx", "cultural_institutions.xlsx") }
+
+cultural_institutions <- read_excel("cultural_institutions.xlsx") %>% 
+  mutate(Lat = as.numeric(Lat)) %>%
+  mutate(Lon = as.numeric(Lon)) %>%
+  mutate(GruppeA = as.factor(GruppeA)) %>%
+  mutate(icon = case_when(
+    GruppeA == "Archive/Bibliotheken" ~ 'pencil',
+    GruppeA == "Berliner Landesmuseen" ~ 'university',    
+    GruppeA == "Bildende Kunst" ~ 'paint-brush',
+    GruppeA == "Bühnen und Theater" ~ 'ticket',
+    GruppeA == "Förderung" ~ 'shopping-cart',
+    GruppeA == "Gedenkstätten" ~ 'shield',
+    GruppeA == "Literatur und Kino" ~ 'film',
+    GruppeA == "Opern und Chöre" ~ 'bell',
+    GruppeA == "Preußische Schlösser & Gärten" ~ 'tree',
+    GruppeA == "Staatliche Museen zu Berlin / Stiftung Preußischer Kulturbesitz" ~ 'building'
+    )
+  ) %>%
+  mutate(icon_colour = case_when(
+    GruppeA == "Archive/Bibliotheken" ~ 'red',
+    GruppeA == "Berliner Landesmuseen" ~ 'lightblue',    
+    GruppeA == "Bildende Kunst" ~ 'blue',
+    GruppeA == "Bühnen und Theater" ~ 'yellow',
+    GruppeA == "Förderung" ~ 'orange',
+    GruppeA == "Gedenkstätten" ~ 'brown',
+    GruppeA == "Literatur und Kino" ~ 'purple',
+    GruppeA == "Opern und Chöre" ~ 'pink',
+    GruppeA == "Preußische Schlösser & Gärten" ~ 'green',
+    GruppeA == "Staatliche Museen zu Berlin / Stiftung Preußischer Kulturbesitz" ~ 'white'
+  )
+)
+
+my_map <- leaflet() %>% 
+  addTiles() %>%
+  addAwesomeMarkers(
+    lat=cultural_institutions$Lat,
+    lng=cultural_institutions$Lon,
+    label=paste(cultural_institutions$Institution, "-", cultural_institutions$SUBahn),
+    icon=awesomeIcons(icon = cultural_institutions$icon, markerColor = cultural_institutions$icon_colour, library = 'fa')
+  )
+my_map
+```
